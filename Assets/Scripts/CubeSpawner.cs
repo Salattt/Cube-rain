@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class CubeSpawner : MonoBehaviour
+public class CubeSpawner : Spawner
 {
-    [SerializeField] private CubePool _pool;
     [SerializeField] private float _spawnTime;
 
     private Transform _transform;
@@ -26,19 +23,11 @@ public class CubeSpawner : MonoBehaviour
         {
             _timer = 0f;
 
-            Spawn();
+            Spawn(GetSpawnPosition());
         }
     }
 
-    private void Spawn()
-    {
-        if(_pool.TryGetCube(out Cube cube))
-        {
-            cube.Transform.position = GetRandomSpawnPosition();
-        }
-    }
-
-    private Vector3 GetRandomSpawnPosition()
+    private  Vector3 GetSpawnPosition()
     {
         return new Vector3(Random.Range(_transform.position.x - _collider.size.x /2, _transform.position.x + _collider.size.x / 2), Random.Range(_transform.position.y - _collider.size.y / 2, _transform.position.y + _collider.size.y / 2),
             Random.Range(_transform.position.z - _collider.size.z / 2, _transform.position.z + _collider.size.z / 2));
