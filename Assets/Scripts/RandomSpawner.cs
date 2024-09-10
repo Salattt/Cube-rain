@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class CubeSpawner : Spawner
+public class RandomSpawner : Spawner
 {
     [SerializeField] private float _spawnTime;
 

@@ -10,6 +10,7 @@ public abstract class SpawnebleObject : MonoBehaviour
     protected Color _color;
 
     public event Action<SpawnebleObject> Destroyed;
+    public event Action <SpawnebleObject>AlmostDestroyed;
 
     public float DestroyTime { get; private set; } = -1;
     public GameObject GameObject { get; private set; }
@@ -35,5 +36,10 @@ public abstract class SpawnebleObject : MonoBehaviour
     protected void InvokeDestroy()
     {
         Destroyed?.Invoke(this);
+    }
+
+    protected void InvokeAlmostDestroyed()
+    {
+        AlmostDestroyed?.Invoke(this);
     }
 }

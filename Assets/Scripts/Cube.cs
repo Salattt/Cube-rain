@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -5,6 +6,7 @@ using Random = UnityEngine.Random;
 public class Cube : SpawnebleObject
 {
     private bool _isDestroyed = false;
+
 
     public void Destroy()
     {
@@ -32,6 +34,7 @@ public class Cube : SpawnebleObject
     {
         yield return new WaitForSeconds(DestroyTime);
 
+        InvokeAlmostDestroyed();
         InvokeDestroy();
     }
 }

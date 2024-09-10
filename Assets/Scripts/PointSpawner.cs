@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class BombSpawner : Spawner
+public class PointSpawner : Spawner
 {
     public void OnObjectDestroyed(SpawnebleObject spawnebleObject)
     {

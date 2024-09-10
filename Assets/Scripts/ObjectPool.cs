@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ObjectPool : MonoBehaviour
 {
@@ -8,11 +10,13 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private int _quantity;
     [SerializeField] private float _minReleaseCountdown;
     [SerializeField] private float _maxReleaseCountdown;
-    [SerializeField] private BombSpawner _additionalSubscriber;
 
     private List<SpawnebleObject> _objects = new List<SpawnebleObject>();
 
     private Vector3 _position;
+
+    public event Action ObjectReleased;
+    public event Action ObjectInstantiate;
 
     private void Awake()
     {
@@ -20,29 +24,28 @@ public class ObjectPool : MonoBehaviour
         FillList();
     }
 
-    public bool TryGet(out SpawnebleObject spawnebleObject)
+    public SpawnebleObject Get()
     {
-        spawnebleObject = null;
+        SpawnebleObject spawnebleObject;
 
-        if(_objects.Count > 0)
+        if (_objects.Count > 0)
         {
             spawnebleObject = _objects[0];
 
-            if (_additionalSubscriber != null)
-            {
-                spawnebleObject.Destroyed += _additionalSubscriber.OnObjectDestroyed;
-            }
-
-            spawnebleObject.Destroyed += OnObjectDestroyed;
-
             _objects.Remove(spawnebleObject);
             spawnebleObject.GameObject.SetActive(true);
-            spawnebleObject.Construct(Random.Range(_minReleaseCountdown,_maxReleaseCountdown));
-
-            return true;
         }
-         
-        return false;
+        else
+        {
+            spawnebleObject = Instantiate(_prefab, _position, Quaternion.identity);
+            ObjectInstantiate?.Invoke();
+        }
+
+        spawnebleObject.Destroyed += OnObjectDestroyed;
+
+        spawnebleObject.Construct(Random.Range(_minReleaseCountdown,_maxReleaseCountdown));
+
+        return spawnebleObject;
     }
 
     private void FillList()
@@ -55,6 +58,7 @@ public class ObjectPool : MonoBehaviour
 
             _objects.Add(spawnebleObject);
             spawnebleObject.GameObject.SetActive(false);
+            ObjectInstantiate?.Invoke();
         }
     }
 
@@ -68,5 +72,7 @@ public class ObjectPool : MonoBehaviour
         _objects.Add(spawnebleObject);
         spawnebleObject.ReturnToDefault();
         spawnebleObject.gameObject.SetActive(false);
+
+        ObjectReleased?.Invoke();
     }
 }
