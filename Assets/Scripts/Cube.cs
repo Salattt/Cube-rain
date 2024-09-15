@@ -7,6 +7,7 @@ public class Cube : SpawnebleObject
 {
     private bool _isDestroyed = false;
 
+    public event Action<Cube> AlmostDestroyed;
 
     public void Destroy()
     {
@@ -34,7 +35,7 @@ public class Cube : SpawnebleObject
     {
         yield return new WaitForSeconds(DestroyTime);
 
-        InvokeAlmostDestroyed();
+        AlmostDestroyed?.Invoke(this);
         InvokeDestroy();
     }
 }

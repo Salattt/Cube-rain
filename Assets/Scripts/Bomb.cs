@@ -30,17 +30,9 @@ public class Bomb : SpawnebleObject
 
             _meshRenderer.material.color = new Color(_color.r, _color.g, _color.b,timer/DestroyTime);
         }
-        
-        StartCoroutine(ExplosiodeRoutine());
-    }
 
-    private IEnumerator ExplosiodeRoutine()
-    {
         _explosion.Explode();
 
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
-
-        _explosion.TurnOff();
         InvokeDestroy();
     }
 }

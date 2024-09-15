@@ -1,9 +1,10 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class RandomSpawner : Spawner
+public class CubeSpawner : Spawner<Cube>
 {
     [SerializeField] private float _spawnTime;
+    [SerializeField] private BombSpawner _spawner;
 
     private Transform _transform;
     private BoxCollider _collider;
@@ -23,8 +24,13 @@ public class RandomSpawner : Spawner
         {
             _timer = 0f;
 
-            Spawn(GetSpawnPosition());
+            Spawn(GetSpawnPosition());  
         }
+    }
+
+    protected override void OnSpawn(Cube spawnedObject)
+    {
+        spawnedObject.AlmostDestroyed += _spawner.OnObjectDestroyed;
     }
 
     private  Vector3 GetSpawnPosition()

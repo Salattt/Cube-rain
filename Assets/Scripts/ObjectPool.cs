@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private SpawnebleObject _prefab;
-    [SerializeField] private int _quantity;
     [SerializeField] private float _minReleaseCountdown;
     [SerializeField] private float _maxReleaseCountdown;
 
@@ -18,10 +17,12 @@ public class ObjectPool : MonoBehaviour
     public event Action ObjectReleased;
     public event Action ObjectInstantiate;
 
+    public int InitiatedObjects { get; private set; } = 0;
+    public int ReleasedObjects { get; private set; } = 0;
+
     private void Awake()
     {
         _position = transform.position;
-        FillList();
     }
 
     public SpawnebleObject Get()
@@ -38,6 +39,9 @@ public class ObjectPool : MonoBehaviour
         else
         {
             spawnebleObject = Instantiate(_prefab, _position, Quaternion.identity);
+
+            InitiatedObjects++;
+
             ObjectInstantiate?.Invoke();
         }
 
@@ -46,20 +50,6 @@ public class ObjectPool : MonoBehaviour
         spawnebleObject.Construct(Random.Range(_minReleaseCountdown,_maxReleaseCountdown));
 
         return spawnebleObject;
-    }
-
-    private void FillList()
-    {
-        SpawnebleObject spawnebleObject;
-
-        for (int i = 0; i < _quantity; i++)
-        {
-            spawnebleObject = Instantiate(_prefab, _position, Quaternion.identity);
-
-            _objects.Add(spawnebleObject);
-            spawnebleObject.GameObject.SetActive(false);
-            ObjectInstantiate?.Invoke();
-        }
     }
 
     private void OnObjectDestroyed(SpawnebleObject spawnebleObject)
@@ -72,6 +62,8 @@ public class ObjectPool : MonoBehaviour
         _objects.Add(spawnebleObject);
         spawnebleObject.ReturnToDefault();
         spawnebleObject.gameObject.SetActive(false);
+
+        ReleasedObjects++;
 
         ObjectReleased?.Invoke();
     }
