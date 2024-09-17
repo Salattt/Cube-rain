@@ -28,9 +28,9 @@ public class CubeSpawner : Spawner<Cube>
         }
     }
 
-    protected override void OnSpawn(Cube spawnedObject)
+    protected override void OnSpawn(Cube cube)
     {
-        spawnedObject.AlmostDestroyed += _spawner.OnObjectDestroyed;
+        cube.AlmostDestroyed += _spawner.OnObjectAlmostDestroyed;
     }
 
     private  Vector3 GetSpawnPosition()

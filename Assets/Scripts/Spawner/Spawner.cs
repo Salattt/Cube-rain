@@ -3,15 +3,24 @@ using UnityEngine;
 
 public class Spawner<T> : MonoBehaviour where T : SpawnebleObject
 {
-    [SerializeField] protected ObjectPool _pool;
+    [SerializeField] protected ObjectPool Pool;
 
     public event Action ObjectSpawned;
 
     public int SpawnQuantity { get; private set; } = 0;
 
-    protected  void Spawn(Vector3 position)
+    public void OnObjectDestroyed(SpawnebleObject spawnebleObject)
     {
-        T spawnebleObject = (T)_pool.Get();
+        spawnebleObject.Destroyed -= OnObjectDestroyed;
+        
+        Pool.Return(spawnebleObject);
+    }
+
+    protected void Spawn(Vector3 position)
+    {
+        T spawnebleObject = (T)Pool.Get();
+
+        spawnebleObject.Destroyed += OnObjectDestroyed;
 
         spawnebleObject.Transform.position = position;
 

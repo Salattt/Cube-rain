@@ -6,8 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public abstract class SpawnebleObject : MonoBehaviour
 {
-    protected MeshRenderer _meshRenderer;
-    protected Color _color;
+    protected MeshRenderer MeshRenderer;
+    protected Color StartColor;
 
     public event Action<SpawnebleObject> Destroyed;
 
@@ -20,8 +20,8 @@ public abstract class SpawnebleObject : MonoBehaviour
     {
         GameObject = gameObject;
         Transform = transform;
-        _meshRenderer = GetComponent<MeshRenderer>();
-        _color = _meshRenderer.material.color;
+        MeshRenderer = GetComponent<MeshRenderer>();
+        StartColor = MeshRenderer.material.color;
         Rigidbody = GetComponent<Rigidbody>();
     }
 

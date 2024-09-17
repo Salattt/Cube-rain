@@ -1,14 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField] private SpawnebleObject _prefab;
     [SerializeField] private float _minReleaseCountdown;
     [SerializeField] private float _maxReleaseCountdown;
+    [SerializeField] private SpawnebleObjectFabrick _fabric;
 
     private List<SpawnebleObject> _objects = new List<SpawnebleObject>();
 
@@ -38,25 +37,20 @@ public class ObjectPool : MonoBehaviour
         }
         else
         {
-            spawnebleObject = Instantiate(_prefab, _position, Quaternion.identity);
+            spawnebleObject = _fabric.Instantiate();
 
             InitiatedObjects++;
 
             ObjectInstantiate?.Invoke();
         }
 
-        spawnebleObject.Destroyed += OnObjectDestroyed;
-
         spawnebleObject.Construct(Random.Range(_minReleaseCountdown,_maxReleaseCountdown));
 
         return spawnebleObject;
     }
 
-    private void OnObjectDestroyed(SpawnebleObject spawnebleObject)
+    public void Return(SpawnebleObject spawnebleObject)
     {
-        spawnebleObject.Destroyed -= OnObjectDestroyed;
-
-
         spawnebleObject.Transform.position = _position;
 
         _objects.Add(spawnebleObject);

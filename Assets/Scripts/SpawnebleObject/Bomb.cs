@@ -5,9 +5,16 @@ public class Bomb : SpawnebleObject
 {
     [SerializeField] private Explosion _explosion;
 
+    private WaitForSeconds _updateTime;
+
+    private void Start()
+    {
+        _updateTime = new WaitForSeconds(Time.fixedDeltaTime);
+    }
+
     public override void ReturnToDefault()
     {
-        _meshRenderer.material.color = _color;    
+        MeshRenderer.material.color = StartColor;    
     }
 
     public override void Construct(float destoyTime)
@@ -20,15 +27,14 @@ public class Bomb : SpawnebleObject
     private IEnumerator DestroyRoutine()
     {
         float timer = DestroyTime;
-        WaitForSeconds updateTime = new WaitForSeconds(Time.fixedDeltaTime);
 
         while (timer > 0)
         { 
-            yield return updateTime;
+            yield return _updateTime;
 
             timer -= Time.fixedDeltaTime;
 
-            _meshRenderer.material.color = new Color(_color.r, _color.g, _color.b,timer/DestroyTime);
+            MeshRenderer.material.color = new Color(StartColor.r, StartColor.g, StartColor.b,timer/DestroyTime);
         }
 
         _explosion.Explode();

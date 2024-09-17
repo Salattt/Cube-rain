@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 public class Cube : SpawnebleObject
 {
     private bool _isDestroyed = false;
+    private WaitForSeconds _destroyTime;
+
 
     public event Action<Cube> AlmostDestroyed;
 
@@ -23,17 +25,19 @@ public class Cube : SpawnebleObject
     public override void ReturnToDefault()
     {
         _isDestroyed = false;
-        _meshRenderer.material.color = _color;
+        MeshRenderer.material.color = StartColor;
     }
 
     private void ChangeColor()
     {
-        _meshRenderer.material.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        MeshRenderer.material.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
     }
 
     private IEnumerator DestroyRoutine()
     {
-        yield return new WaitForSeconds(DestroyTime);
+        _destroyTime = new WaitForSeconds(DestroyTime);
+
+        yield return _destroyTime;
 
         AlmostDestroyed?.Invoke(this);
         InvokeDestroy();
